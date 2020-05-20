@@ -24,18 +24,19 @@
             <div class="money" v-else>￥{{item.money}}</div>
           </div>
         </div>
-        <div class="wrap_01 yuan" style="height: 200px;">
+        <div class="wrap_01 yuan" style="height: 200px;" :id="`progress${index}`">
           <CircleProgress
             :id="item.id"
             :width="100"
             :radius="8"
-            :progress="30"
+            :progress="item.value"
             :isAnimation="true"
             :barColor="colors[index].color"
             :backgroundColor="colors[index].bgcolor"
           >
             <span slot></span>
           </CircleProgress>
+
           <div v-if="active===index">
             <div class="value">{{item.value}}%</div>
             <div class="over">完成率</div>
@@ -85,7 +86,7 @@
               >{{item.cuts}}</el-option>
             </el-select>
           </el-form-item>
-          <el-form-item  label="相关汇报人" v-if="form.region==='工作汇报'">
+          <el-form-item label="相关汇报人" v-if="form.region==='工作汇报'">
             <el-select v-model="form.name" placeholder="请选择汇报人" style="width:100%" multiple>
               <el-option
                 label
@@ -194,7 +195,7 @@ import CircleProgress from "vue-circleprogressbar";
 import { createNamespacedHelpers } from "vuex";
 const userModule = createNamespacedHelpers("user");
 const { mapActions: userActions, mapState: userState } = userModule;
-import qr from '../../components/qr' 
+import qr from "../../components/qr";
 export default {
   data() {
     this.chartSettings = {
@@ -202,6 +203,7 @@ export default {
       sizeMax: 25
     };
     return {
+      activeIdx: false,
       startVal: 0,
       endVal: 2017,
       active: 0,
@@ -233,7 +235,7 @@ export default {
     countTo,
     CircleProgress,
     // QRCode,
-    qr,
+    qr
   },
   methods: {
     ...userActions(["getprogress"]),
@@ -245,8 +247,18 @@ export default {
     ...userActions(["getUrl"]),
     //切换环形图
     app(e) {
-      this.active = e;
-      console.log(this.active);
+      if (e !== this.active) {
+        this.changeSwitch(this.active);
+        this.changeSwitch(e);
+        this.active = e;
+      }
+    },
+    changeSwitch(index) {
+      let a = `#progress${index}`;
+      document.querySelector(a).style.display = "none";
+      setTimeout(() => {
+        document.querySelector(a).style.display = "block";
+      }, 0);
     },
     //点击确定发布动态
     release() {
@@ -270,7 +282,7 @@ export default {
       this.dialogFormVisibles = true;
       this.urls = e.url;
       console.log(this.urls);
-      this.getUrl(e.url)
+      this.getUrl(e.url);
     },
     //点击复制按钮
     copy() {
@@ -357,5 +369,4 @@ export default {
   width: 100%;
   margin-top: 20px;
 }
-
 </style>

@@ -59,7 +59,8 @@ const routes = [{
                     import ('../pages/dashboard/dashboard'),
                 meta: {
                     title: "首页",
-
+                    enName: "dashboard",
+                    parentName: null,
                 }
 
             },
@@ -76,7 +77,8 @@ const routes = [{
                     import ('../pages/calendar/calendar'),
                 meta: {
                     title: "日程管理",
-
+                    enName: "calendar",
+                    parentName: null,
                 }
             },
 
@@ -91,7 +93,9 @@ const routes = [{
                 component: () =>
                     import ('../pages/maillist/maillist'),
                 meta: {
-
+                    title: '通讯录',
+                    enName: "mailList",
+                    parentName: null,
                 }
             },
 
@@ -107,7 +111,8 @@ const routes = [{
                     import ('../pages/organization/offer'),
                 meta: {
                     title: "offer管理",
-
+                    enName: "offer",
+                    parentName: 'organize',
                 }
             },
 
@@ -123,7 +128,8 @@ const routes = [{
                     import ('../pages/organization/userInfo'),
                 meta: {
                     title: "人员信息",
-
+                    enName: "userInfo",
+                    parentName: 'organize',
                 }
             },
 
@@ -139,7 +145,8 @@ const routes = [{
                     import ('../pages/organization/pay'),
                 meta: {
                     title: "薪酬管理",
-
+                    enName: "payMent",
+                    parentName: 'organize',
                 }
             },
 
@@ -155,7 +162,8 @@ const routes = [{
                     import ('../pages/form/stepForm'),
                 meta: {
                     title: "分步表单",
-
+                    enName: "stepForm",
+                    parentName: 'form',
                 }
             },
 
@@ -171,7 +179,8 @@ const routes = [{
                     import ('../pages/checkForm/CheckForm'),
                 meta: {
                     title: "查看账单",
-
+                    enName: "checkForm",
+                    parentName: 'form',
                 }
             },
 

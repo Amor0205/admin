@@ -38,53 +38,66 @@
         <el-header class="header">
           <div class="flex j-content-b">
             <div class="flex">
-              <div class="two" @click="icons">
+              <div class="two" @click="icons"  data-step="1" data-intro="收缩菜单">
+
                 <i :class="isCollapse?'el-icon-s-unfold':'el-icon-s-fold'"></i>
               </div>
-              <div class="size">Tom and Jerry后台管理系统</div>
+
+              <div class="size">Tom and Jerry{{$t(`commons.admin`)}}</div>
             </div>
             <div class="flex">
               <div class="m-left1 five">
-                <el-dropdown>
-                  <span class="el-dropdown-link five">
+                <el-dropdown @command="handleCommand">
+                  <span class="el-dropdown-link five" data-step="2" data-intro="切换语言">
                     <i class="el-icon-edit-outline"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>简体中文</el-dropdown-item>
-                    <el-dropdown-item>繁體中文</el-dropdown-item>
-                    <el-dropdown-item>English</el-dropdown-item>
+                    <el-dropdown-item
+                      v-for="(item,index) in options"
+                      :key="index"
+                      :command="item.value"
+                    >{{item.label}}</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
-              <div class="m-left1 five" @click="handleFullScreen">
-                <el-tooltip class="item" effect="dark" content="全屏" placement="bottom-start">
+              <div class="m-left1 five" @click="handleFullScreen" >
+                <el-tooltip class="item" effect="dark" content="全屏" placement="bottom-start" data-step="3" data-intro="切换全屏">
                   <i class="el-icon-full-screen"></i>
                 </el-tooltip>
               </div>
               <div class="m-left1 five" @click="open">
-                <el-tooltip class="item" effect="dark" content="锁屏" placement="bottom-start">
+                <el-tooltip class="item" effect="dark" content="锁屏" placement="bottom-start" data-step="4" data-intro="锁屏">
                   <i class="el-icon-unlock"></i>
                 </el-tooltip>
               </div>
               <div class="flex">
                 <el-dropdown>
-                  <span class="el-dropdown-link five flex">
-                    <div class="yuan"></div>
+                  <span class="el-dropdown-link five flex" data-step="5" data-intro="用户操作">
+                    <el-avatar :size="30" :src="circleUrl" class="m-top2"></el-avatar>
                     <div class="derar">
-                      亲爱的：{{name.username}}
+                      {{$t(`commons.dear`)}}:{{name.username}}
                       <i class="el-icon-arrow-down"></i>
                     </div>
                   </span>
 
                   <el-dropdown-menu slot="dropdown">
                     <span>
-                      <el-dropdown-item>上传头像</el-dropdown-item>
+                      <el-dropdown-item>
+                        <el-upload
+                          :headers="headers"
+                          action="api/upload/image"
+                          :show-file-list="false"
+                          :before-upload="beforeAvatarUpload"
+                          :on-success="handleAvatarSuccess"
+                          :on-error="handleAvatarError"
+                        >{{$t(`commons.uploadAvatar`)}}</el-upload>
+                      </el-dropdown-item>
                     </span>
                     <span @click="ChangePassword">
                       <el-dropdown-item>修改密码</el-dropdown-item>
                     </span>
                     <span @click="out">
-                      <el-dropdown-item >退出系统</el-dropdown-item>
+                      <el-dropdown-item>退出系统</el-dropdown-item>
                     </span>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -133,9 +146,12 @@
         </el-header>
         <el-main>
           <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/calendar' }">日程管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/calendar' }">通讯录</el-breadcrumb-item>
+         <el-breadcrumb-item :to="{ path: '/' }">{{$t(`commons.dashboard`)}}</el-breadcrumb-item>
+            <el-breadcrumb-item
+              v-for="(item,index) in breadcrumbList"
+              :key="index"
+            >{{$t(`commons.${item}`)}}</el-breadcrumb-item>
+          
           </el-breadcrumb>
           <router-view></router-view>
         </el-main>
@@ -148,6 +164,8 @@
 import { createNamespacedHelpers } from "vuex";
 const userModule = createNamespacedHelpers("user");
 const { mapActions: userActions, mapState: userState } = userModule;
+import IntroJs from 'intro.js'
+import 'intro.js/introjs.css';
 export default {
   name: "",
   props: {},
@@ -188,7 +206,24 @@ export default {
         password: [{ validator: validatePass, trigger: "blur" }],
         pass: [{ validator: validatePass, trigger: "blur" }],
         checkPass: [{ validator: validatePass2, trigger: "blur" }]
-      }
+      },
+      options: [
+        {
+          value: "cn",
+          label: "简体中文"
+        },
+        {
+          value: "tw",
+          label: "繁體中文"
+        },
+        {
+          value: "en",
+          label: "英文"
+        }
+      ],
+      headers: null,
+      circleUrl:'',
+      breadcrumbList:[]
     };
   },
   methods: {
@@ -248,7 +283,7 @@ export default {
             //锁屏状态
             localStorage.setItem("islock", true);
             //存锁屏时的路径
-            localStorage.setItem("path",  this.$route.path);
+            localStorage.setItem("path", this.$route.path);
             this.$router.push("/lock");
             this.$message({
               type: "success",
@@ -266,6 +301,11 @@ export default {
           });
         });
     },
+    //切换语言
+    handleCommand(command) {
+      this.$i18n.locale = command; //在main.js里设置的i180我们在这里调用，并赋值
+      localStorage.setItem("lang", command); //每次切换语言，本地存一下，防止刷新丢失。
+    },
     //点击修改密码
     ChangePassword() {
       this.dialogFormVisible = true;
@@ -274,14 +314,14 @@ export default {
     sure() {
       this.dialogFormVisible = false;
       this.postupdatePwd({
-        username:this.name.username,
-        password:this.ruleForm.password,
-        newPwd:this.ruleForm.checkPass,
-        id:this.name._id
-      })
-      this.ruleForm.pass=''
-      this.ruleForm.password=''
-      this.ruleForm.checkPass=''
+        username: this.name.username,
+        password: this.ruleForm.password,
+        newPwd: this.ruleForm.checkPass,
+        id: this.name._id
+      });
+      this.ruleForm.pass = "";
+      this.ruleForm.password = "";
+      this.ruleForm.checkPass = "";
     },
     //退出登录
     out() {
@@ -292,7 +332,7 @@ export default {
       })
         .then(() => {
           this.$router.push("/login");
-        
+
           this.$message({
             type: "success",
             message: "退出成功!"
@@ -305,14 +345,95 @@ export default {
           });
         });
     },
+    // 上传之前
+    beforeAvatarUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      let a = /\.(jpg|jepg|gif|png)$/;
+      const isType = a.test(file.name);
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      } else if (!isType) {
+        this.$message.error("请上传jpg/png图片!");
+      }
+      return isLt2M && isType;
+    },
+    // 上传成功
+    handleAvatarSuccess(res, file) {
+      if (res.code === 200) {
+        this.circleUrl = res.url;
+        localStorage.setItem("circleUrl", JSON.stringify(res.url));
+        this.$message({
+          message: res.msg,
+          type: "success"
+        });
+      } else {
+        this.$message({
+          message: res.msg,
+          type: "warning"
+        });
+      }
+    },
+    // 上传失败
+    handleAvatarError(res) {
+      console.log(err);
+    },
+    //新手指引功能
+     startIntro() {
+       IntroJs().setOptions({
+        prevLabel: "上一步",
+        nextLabel: "下一步",
+        skipLabel: "跳过",
+        doneLabel: "结束"
+    }).oncomplete(function () {
+        //点击跳过按钮后执行的事件
+    }).onexit(function () {
+        //点击结束按钮后， 执行的事件
+    }).start();
+    
+},
+//面包屑
+getbreadcrumb() {
+      let meta = this.$route.meta;
+      this.breadcrumbList = [];
+      if (meta.enName !== "dashboard") this.breadcrumbList.push(meta.enName);
+      if (meta.parentName) {
+        this.breadcrumbList.unshift(meta.parentName);
+      }
+    }
   },
   mounted() {
     //挂载方法
     this.getMenus();
     this.name = JSON.parse(localStorage.getItem("adminUser"));
     console.log(this.name);
+    //头像存到本地 保持刷新还在
+    if (localStorage.getItem('circleUrl')){
+      this.circleUrl=JSON.parse(localStorage.getItem('circleUrl'))
+    }
+     if (!localStorage.getItem("intro")) {
+      this.$nextTick(() => {
+        this.$confirm("您需要系统引导吗?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "不再提示",
+          type: "info"
+        })
+          .then(() => {
+            this.startIntro();
+          })
+          .catch(() => {
+            localStorage.setItem("intro", true);
+          });
+      });
+    }
+    //挂载面包屑
+       this.getbreadcrumb();
   },
-  watch: {},
+  watch: {
+    //监听路由跳转
+    "$route.path"(val) {
+      this.getbreadcrumb();
+    }
+  },
   computed: {
     //使用数组
     ...userState(["menus"]),
@@ -320,6 +441,11 @@ export default {
     url() {
       return this.$route.path;
     }
+  },
+   beforeMount() {
+    this.headers = {
+      Authorization: localStorage.getItem("adminToken")
+    };
   }
 };
 </script>
@@ -360,4 +486,5 @@ export default {
 .breadcrumb {
   font-size: 16px;
 }
+
 </style>
