@@ -88,5 +88,21 @@ export default {
     //薪酬信息
     getPay() {
         return service.get('/pay')
+    },
+    // 添加日程
+    addCalendar(params) {
+        return service.post('/calendar', params)
+    },
+    // 获取日程
+    getCalendar() {
+        return service.get('/calendar')
+    },
+    // 删除日程
+    delCalendar(params) {
+        return service.post('/delCalendar', params)
+    },
+    // 重复上周
+    repeatDynamic(params) {
+        return service.post('/repeatDynamic', params)
     }
 }
