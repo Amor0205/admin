@@ -9,11 +9,7 @@
     <div class="titles">请务必是你本人操作,确认转账金额及收款人的信息</div>
 
     <el-card class="card">
-      <!-- <Steps :current="current" status="finish" style="width:800px;margin:0 auto;">
-        <Step title="填写转账信息"></Step>
-        <Step title="确认转账信息"></Step>
-        <Step title="完成"></Step>
-      </Steps> -->
+     
 
 <el-steps :space="800" :active="current" finish-status="success" align-center>
   <el-step title="填写转账信息"></el-step>

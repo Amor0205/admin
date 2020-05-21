@@ -1,5 +1,4 @@
-//打印功能
--+
+//打印
 <template>
   <div>
     <!-- <el-breadcrumb separator-class="el-icon-arrow-right">

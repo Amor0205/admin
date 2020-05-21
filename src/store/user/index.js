@@ -179,12 +179,15 @@ export default {
             }
         },
         //退出登录
-        async postupdatePwd({ commit }) {
-            let res = await api.postupdatePwd()
+        async getlogout({ commit }) {
+            let res = await api.getlogout()
             console.log(res);
             if (res.code === 200) {
-                localStorage.clear()
+                router.push("/login");
+                window.localStorage.clear()
                 Message.success('退出成功')
+
+
             }
         },
         //首页进度条数据

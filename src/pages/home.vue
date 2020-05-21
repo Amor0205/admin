@@ -94,7 +94,7 @@
                       </el-dropdown-item>
                     </span>
                     <span @click="ChangePassword">
-                      <el-dropdown-item>修改密码</el-dropdown-item>
+                      <el-dropdown-item> {{$t(`commons.editPwd`)}}</el-dropdown-item>
                     </span>
                     <span @click="out">
                       <el-dropdown-item>退出系统</el-dropdown-item>
@@ -229,7 +229,7 @@ export default {
   methods: {
     //引用接口方法
     ...userActions(["getMenus"]),
-    ...userActions(["postupdatePwd"]),
+    ...userActions(["postupdatePwd",'getlogout']),
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
@@ -325,18 +325,15 @@ export default {
     },
     //退出登录
     out() {
+      let _this=this
       this.$confirm("是否确定退出?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.$router.push("/login");
-
-          this.$message({
-            type: "success",
-            message: "退出成功!"
-          });
+          
+          this.getlogout()
         })
         .catch(() => {
           this.$message({

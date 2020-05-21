@@ -170,7 +170,7 @@ const routes = [{
         ]
     },
     {
-        path: '/form/CheckForm',
+        path: '/CheckForm',
         component: home,
         children: [{
                 path: '',
