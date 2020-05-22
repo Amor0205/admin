@@ -206,10 +206,22 @@ export default router
 
 //锁屏守卫(存密码用的localStorage守卫里面也用localStorage)
 router.beforeEach((to, from, next) => {
-    if (localStorage.getItem('password') && to.path !== '/lock') {
-        next({
-            path: '/lock'
-        })
+        if (localStorage.getItem('password') && to.path !== '/lock') {
+            next({
+                path: '/lock',
+
+
+            })
+        }
+        next()
+    })
+    //全局路由守卫
+router.beforeEach((to, from, next) => {
+    let adminToken = localStorage.getItem('adminToken')
+    if (to.path === "/login" || to.path === "/register") {
+        next()
+    } else {
+        adminToken ? next() : next("/login")
     }
-    next()
+
 })

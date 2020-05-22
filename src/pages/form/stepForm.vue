@@ -119,11 +119,11 @@ export default {
       current: 0,
       size: "200px",
       ruleForm: {
-        informatin: "666",
-        receivables: "666",
-        name: "666",
-        money: "666",
-        password: "666"
+        informatin: "",
+        receivables: "",
+        name: "",
+        money: "",
+        password: ""
       },
       options: [
         {

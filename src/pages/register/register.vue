@@ -64,7 +64,7 @@ export default {
         name: "",
         password: "",
         email: "",
-        phone: "17608130109",
+        phone: "",
         sms: ""
       }
     };

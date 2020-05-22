@@ -90,12 +90,12 @@ export default {
       disabled: "true",
       labelPosition: "right",
       formLabelAlign: {
-        username: "等你带我去流浪",
-        password: "123456",
+        username: "",
+        password: "",
       
       },
       formAlign: {
-        phone: "17608130109",
+        phone: "",
         sms: ""
       },
       input: "",
